@@ -12,6 +12,9 @@ capacidade = pd.read_csv('instancia/capacidades.csv', sep = '\t', header = None)
 demandas = pd.read_csv('instancia/demandas.csv', sep = '\t', header = None)  # Demandas de cada setor(regiao)
 distancias = pd.read_csv('instancia/distancias.csv', sep = '\t', header = None) # Distancias regiao x local
 maxDist = 1000000  # Distancia máxima admitida
+tamanho_populacao = 100
+num_clones = [10,8,6,4,2,2,2,2,2,2]
+mut_clones = [0.01, 0.02, 0.04, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 
 # Constrói a populacao inicial
 def popInicial(numIndividuos):
@@ -37,7 +40,8 @@ def popInicial(numIndividuos):
 
             if(cont >= len(capacidade[0])):
                 cont = 0
-
+    	populacao.append(s)
+    return populacao
 # Função que calcula o fitness
 def calculaFitness(s):
     fit = 0
@@ -53,8 +57,25 @@ def calculaFitness(s):
 
     s.setFitness(fit)
 
-def main():
-    popInicial(2)
+def gera_clones(populacao):
+	clones = []
+	
+
+
+def clonalg(populacao):
+    fitness = list(map(calculaFitness, populacao))
+    fit_ordenado = fitness.sort(reverse = True)
+    pop_clonar = []
+    quant_clones = 
+    for i in range(0, 10):
+    	index = fitness.index(fit_ordenado[i])
+    	pop_clonar.append(populacao[index])
+    clones = gera_clones(pop_clonar, quant_clones)
+    clones = mutar(clones)
+    populacao_intermediaria = popInicial(tamanho_populacao - quant_clones)
+    populacao = clones
+    populacao.append(populacao_intermediaria)
 
 if __name__ == '__main__':
-    main()
+	populacao = popInicial(tamanho_populacao)
+    clonalg(populacao)
