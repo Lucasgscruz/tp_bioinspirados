@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------------------------
+capacidades.csv
+---------------------------------------------------------------------------------------------
+O arquivo contém a capacidade de cada um dos 166 locais de votação utilizados no trabalho (166 linhas).
+Cada linha corresponde à capacidade de um local linha 01 -> local 01; linha 02 -> local 02; ...; linha 166 -> local 166.
+Capacidade é a quantidade de eleitores que cada local de votação pode receber em um dia de votação.
+A capacidade de um local é definido em função da quantidade de salas disponíveis para a votação.
+
+Nsalas x 400 = capacidade
+
+---------------------------------------------------------------------------------------------
+demandas.csv
+---------------------------------------------------------------------------------------------
+O arquivo contem a demanda (quantidade de eleitores) de cada um dos 242 setores populacionais definidos pelo IBGE (242 linhas). 
+A quantidade de eleitores é baseado no cenco populacional, conforme metodologia explicada no artigo/dissertação.
+Cada linha corresponde à demanda de um setor linha 01 -> setor 01; linha 02 -> setor 02; ...; linha 242 -> setor 242.
+
+---------------------------------------------------------------------------------------------
+distancias.csv
+---------------------------------------------------------------------------------------------
+O arquivo contem as distâncias (em metros) entre os locais de votação e o ponto central de cada setor censitário, calculado de acordo com a metodologia explicada no artigo/dissertação.
+São 242 linhas (correspondentes aos 242 setores) e 166 colunas (correspondentes aos 166 locais).
+
+linha 01 x coluna 01 = 1003 | distância entre o setor 01 e o local 01 é de 1003 metros
+linha 02 x coluna 01 = 1293 | distância entre o setor 02 e o local 01 é de 1293 metros
+linha 03 x coluna 01 = 1448 | distância entre o setor 03 e o local 01 é de 1448 metros
+.................................
+linha 242 x coluna 01 = 3384 | distância entre o setor 242 e o local 01 é de 3384 metros
+linha 242 x coluna 02 = 2698 | distância entre o setor 242 e o local 02 é de 2698 metros
+.................................
+linha 242 x coluna 166 = 5817 | distância entre o setor 242 e o local 166 é de 5817 metros
