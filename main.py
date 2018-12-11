@@ -6,15 +6,14 @@ import random
 import solucao as sol
 import local
 
-
 # Leitura dos arquivos csv
 capacidade = pd.read_csv('instancia/capacidades.csv', sep = '\t', header = None) # Capacidade dos locais (de votacao)
 demandas = pd.read_csv('instancia/demandas.csv', sep = '\t', header = None)  # Demandas de cada setor(regiao)
 distancias = pd.read_csv('instancia/distancias.csv', sep = ';', header = None) # Distancias regiao x local
 
 # Constantes Globais
-maxDist = 12487  # Distancia máxima admitida (maior distancia: 12487)
-tamanho_populacao = 100
+maxDist = 3000  # Distancia máxima admitida (maior distancia da instancia: 12487)
+tamanho_populacao = 10
 num_clones = [10,8,6,4,2,2,2,2,2,2]
 mut_clones = [0.01, 0.02, 0.04, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 
@@ -31,7 +30,9 @@ def popInicial(numIndividuos):
 
         while(len(listaSetores) > 0):# Atribui as demandas das regioes da cidade aos locais de votacao
         	cont = random.randint(0, 165)
-        	if(s.getLocal(cont).getOcupacao() + demandas[0][listaSetores[0]] <= s.getLocal(cont).getCapacidade()):
+            # Verifica a capacidade maxima do local de votaçao
+        	if(s.getLocal(cont).getOcupacao() + demandas[0][listaSetores[0]] <= s.getLocal(cont).getCapacidade() and
+            distancias[cont][listaSetores[0]] <= maxDist):
         		s.getLocal(cont).addRegiao(listaSetores[0])
         		s.getLocal(cont).addOcupacao(demandas[0][listaSetores[0]])
         		listaSetores.pop(0)
@@ -49,11 +50,11 @@ def calculaFitness(s):
         for j in i.getRegioesAtendidas():
             fit = fit + demandas[0][j] * distancias[i.getId()][j]
             if(distancias[i.getId()][j] > maxDist):
-                # print "Distancia ",i.getId(), j, distancias[i.getId()][j], "maxDist:", maxDist
+                print "Distancia ",i.getId(), j, distancias[i.getId()][j], "maxDist:", maxDist
                 s.setViavel(False)
                 fit += penalidadeDistancia
         if (i.getOcupacao() > i.getCapacidade()):
-            # print "ocupacao"
+            print "ocupacao"
             s.setViavel(False)
             fit += penalidadeCapacidade
     s.setFitness(fit)
@@ -80,4 +81,6 @@ def clonalg(populacao):
 if __name__ == '__main__':
     populacao = popInicial(tamanho_populacao)
 
+    for i in populacao:
+        print i.getViavel()," ->", i.getFitness()
     #clonalg(populacao)
