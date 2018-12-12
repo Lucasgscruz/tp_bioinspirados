@@ -26,6 +26,9 @@ class Local:
     def addOcupacao(self, demanda):
         self.ocupacao += demanda
 
+    def removerOcupacao(self, demanda):
+        self.ocupacao = self.ocupacao - demanda
+
     def setRegioesAtendidas(self, regioes):
         self.regioesAtendidas = regioes
 

@@ -3,6 +3,7 @@
 
 import pandas as pd
 import random
+import time
 import solucao as sol
 import local
 import copy as cp
@@ -17,7 +18,7 @@ maxDist = 3000  # Distancia máxima admitida (maior distancia da instancia: 1248
 tamanho_populacao = 200
 num_clones = [10,8,6,4,2,2,2,2,2,2]
 mut_clones = [0.01, 0.02, 0.04, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-geracoes = 400
+geracoes = 2
 
 # Constrói a populacao inicial
 def popInicial(numIndividuos):
@@ -67,6 +68,7 @@ def exibeIndividuo(individuo):
         print i.getId(), '->' ,i.getRegioesAtendidas()
     print "Fitness:", individuo.getFitness(), " Viável:", individuo.getViavel()
 
+# Produz os clones dos individuos recebidos como parametro
 def gera_clones(pop_clonar):
     clones = []
     for i in range(len(pop_clonar)):
@@ -76,8 +78,8 @@ def gera_clones(pop_clonar):
             k += 1
     return clones
 
+# Realiza mutação nos clones
 def muta_clones(clones):
-
     for i in range(0, len(num_clones)):
         k = 0
         while(k < num_clones[i]): #Só pra garantir que o vetor do num_clones e mutação estejam na mesma pos
@@ -91,10 +93,16 @@ def muta_clones(clones):
                     setor_atendido = j.getRegioesAtendidas()
                     if len(setor_atendido) is not 0:
                         setor_muda = setor_atendido[0]
-                        j.removerRegiao(0)
-                        clones[k].getLocal(rand2).addRegiao(setor_muda)
+                        if(clones[k].getLocal(rand2).getOcupacao() + demandas[0][setor_muda] <=
+                        clones[k].getLocal(rand2).getCapacidade() and
+                        distancias[clones[k].getLocal(rand2).getId()][setor_muda] <= maxDist):
+                            j.removerRegiao(0)
+                            j.removerOcupacao(demandas[0][setor_muda])
+                            clones[k].getLocal(rand2).addRegiao(setor_muda)
+            calculaFitness(clones[k])
             k += 1
     return clones
+
 def gera_nova_pop(clones, populacao_intermediaria):
     populacao = []
     for i in range(len(clones)):
@@ -102,6 +110,14 @@ def gera_nova_pop(clones, populacao_intermediaria):
     for j in range(len(populacao_intermediaria)):
         populacao.append(populacao_intermediaria[i])
     return populacao
+
+def somaLocais(individuo):
+    soma = 0
+    for i in individuo.getLocais():
+        if(len(i.getRegioesAtendidas()) > 0):
+            soma += 1
+    return soma
+
 def clonalg(populacao):
     y = 0
     melhores_fit = []
@@ -132,8 +148,12 @@ def clonalg(populacao):
         # populacao = clones
         # populacao.append(populacao_intermediaria)
         y += 1
-        print 'geracao', y
+        print 'Geracao %d  melhor fitness -> %d' % (y, melhores_fit[-1:][0])
     print melhores_fit
+
 if __name__ == '__main__':
+    inicio = time.time()
     populacao = popInicial(tamanho_populacao)
     clonalg(populacao)
+    fim = time.time()
+    print 'Tempo de execução: %.4f segundos' % (fim - inicio)
