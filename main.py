@@ -149,11 +149,14 @@ def clonalg(populacao):
         # populacao.append(populacao_intermediaria)
         y += 1
         print 'Geracao %d  melhor fitness -> %d' % (y, melhores_fit[-1:][0])
+
     print melhores_fit
+    return melhores_indiv[-1:][0]
 
 if __name__ == '__main__':
     inicio = time.time()
     populacao = popInicial(tamanho_populacao)
-    clonalg(populacao)
+    melhorIdividuo = clonalg(populacao)
     fim = time.time()
-    print 'Tempo de execução: %.4f segundos' % (fim - inicio)
+    print '\nMelhor individuo\n - Fitness:', melhorIdividuo.getFitness(),'\n - Nº locais instalados:', somaLocais(melhorIdividuo), '\n - Viável:', melhorIdividuo.getViavel()
+    print '\n\nTempo de execução: %.4f segundos' % (fim - inicio)
