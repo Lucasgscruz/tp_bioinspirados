@@ -14,9 +14,10 @@ distancias = pd.read_csv('instancia/distancias.csv', sep = ';', header = None) #
 
 # Constantes globais
 maxDist = 3000  # Distancia máxima admitida (maior distancia da instancia: 12487)
-tamanho_populacao = 100
+tamanho_populacao = 200
 num_clones = [10,8,6,4,2,2,2,2,2,2]
 mut_clones = [0.01, 0.02, 0.04, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+geracoes = 400
 
 # Constrói a populacao inicial
 def popInicial(numIndividuos):
@@ -75,26 +76,64 @@ def gera_clones(pop_clonar):
             k += 1
     return clones
 
+def muta_clones(clones):
+
+    for i in range(0, len(num_clones)):
+        k = 0
+        while(k < num_clones[i]): #Só pra garantir que o vetor do num_clones e mutação estejam na mesma pos
+            for j in clones[k].getLocais():
+                rand = random.uniform(0.0, 1.0)
+                if(rand < mut_clones[i]):
+                    #print 'mutou'
+                    rand2 = random.randint(0, 165)
+                    #print 'saiu de', j.getId()
+                    #print 'foi para', rand2
+                    setor_atendido = j.getRegioesAtendidas()
+                    if len(setor_atendido) is not 0:
+                        setor_muda = setor_atendido[0]
+                        j.removerRegiao(0)
+                        clones[k].getLocal(rand2).addRegiao(setor_muda)
+            k += 1
+    return clones
+def gera_nova_pop(clones, populacao_intermediaria):
+    populacao = []
+    for i in range(len(clones)):
+        populacao.append(clones[i])
+    for j in range(len(populacao_intermediaria)):
+        populacao.append(populacao_intermediaria[i])
+    return populacao
 def clonalg(populacao):
-    fitness = []
-    for i in populacao:
-        fitness.append(i.getFitness())
-    fit_ordenado = cp.copy(fitness)
-    fit_ordenado.sort()
+    y = 0
+    melhores_fit = []
+    melhores_indiv = []
+    while (y < geracoes):
+        fitness = []
+        for i in populacao:
+            fitness.append(i.getFitness())
+        fit_ordenado = cp.copy(fitness)
+        fit_ordenado.sort()
 
-    pop_clonar = []
-    for i in range(0, 10): # 10 individuos a serem clonados
-    	index = fitness.index(fit_ordenado[i])
-    	pop_clonar.append(populacao[index])
-    clones = gera_clones(pop_clonar)
-    print len(clones), "tamanho len clones"
-    print sum(num_clones), "somatorio, deveria ser isso"
+        pop_clonar = []
+        for i in range(0, 10): # 10 individuos a serem clonados
+        	index = fitness.index(fit_ordenado[i])
+        	pop_clonar.append(populacao[index])
 
-    # clones = mutar(clones)
-    # populacao_intermediaria = popInicial(tamanho_populacao - quant_clones)
-    # populacao = clones
-    # populacao.append(populacao_intermediaria)
+        melhores_fit.append(fit_ordenado[0])
+        melhores_indiv.append(pop_clonar[0])
 
+        clones = gera_clones(pop_clonar)
+        clones = muta_clones(clones)
+        quant_aleatorio = tamanho_populacao - len(clones)
+        pop_inter = popInicial(quant_aleatorio)
+        populacao = gera_nova_pop(clones, pop_inter)
+
+        #print len(clones), "tamanho len clones"
+        #print sum(num_clones), "somatorio, deveria ser isso"
+        # populacao = clones
+        # populacao.append(populacao_intermediaria)
+        y += 1
+        print 'geracao', y
+    print melhores_fit
 if __name__ == '__main__':
     populacao = popInicial(tamanho_populacao)
     clonalg(populacao)
