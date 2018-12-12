@@ -7,6 +7,8 @@ import time
 import solucao as sol
 import local
 import copy as cp
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Leitura dos arquivos csv
 capacidade = pd.read_csv('instancia/capacidades.csv', sep = '\t', header = None) # Capacidade dos locais (de votacao)
@@ -14,11 +16,11 @@ demandas = pd.read_csv('instancia/demandas.csv', sep = '\t', header = None)  # D
 distancias = pd.read_csv('instancia/distancias.csv', sep = ';', header = None) # Distancias regiao x local
 
 # Constantes globais
-maxDist = 3000  # Distancia máxima admitida (maior distancia da instancia: 12487)
-tamanho_populacao = 200
+maxDist = 12487  # Distancia máxima admitida (maior distancia da instancia: 12487)
+tamanho_populacao = 100
 num_clones = [10,8,6,4,2,2,2,2,2,2]
 mut_clones = [0.01, 0.02, 0.04, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-geracoes = 2
+geracoes = 150
 
 # Constrói a populacao inicial
 def popInicial(numIndividuos):
@@ -118,6 +120,18 @@ def somaLocais(individuo):
             soma += 1
     return soma
 
+def plota(melhores):
+    x = []
+    y = []
+
+    for k in range(0,geracoes):
+        x.append(k)
+        y.append(melhores[k])
+
+    fig,ax = plt.subplots()
+    ax.plot(x,y)
+    plt.show()
+
 def clonalg(populacao):
     y = 0
     melhores_fit = []
@@ -151,6 +165,7 @@ def clonalg(populacao):
         print 'Geracao %d  melhor fitness -> %d' % (y, melhores_fit[-1:][0])
 
     print melhores_fit
+    plota(melhores_fit)
     return melhores_indiv[-1:][0]
 
 if __name__ == '__main__':
